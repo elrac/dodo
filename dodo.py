@@ -10,7 +10,24 @@ from datetime import datetime
 from time import mktime
 
 
-DODO_FILE = os.path.join(os.getcwd(), 'DODO')
+
+MAKE_DODO_FILE = os.path.join(os.getcwd(), 'DODO')
+
+def findDodoFile():
+    currentPath = os.path.join(os.getcwd(), 'DODO')
+    currentDirSplit = os.getcwd().split(os.sep)
+
+    while len(currentDirSplit) > 0 and not os.path.isfile(currentPath):
+        currentDirSplit.pop()
+        currentPath = os.path.join( os.path.join( os.sep, *currentDirSplit), 'DODO');
+
+    if os.path.isfile(currentPath):
+        return currentPath
+
+    return os.path.join(os.getcwd(), 'DODO')
+
+DODO_FILE = findDodoFile()
+
 VERSION = "0.99"
 
 
@@ -107,7 +124,7 @@ def dodo_unload(final_do_base):
 
 
 def dodo_init(args):
-    file_name = args.file or DODO_FILE
+    file_name = args.file or MAKE_DODO_FILE
     try:
         try:
             open(file_name, "r")
@@ -331,7 +348,8 @@ if __name__ == "__main__":
                             'propose',
                             'reject',
                             'remove',
-                            'workon'
+                            'workon',
+                            'init'
                         ],
                         help="The operation to perform")
     parser.add_argument("quick_access", nargs='?', default='',
